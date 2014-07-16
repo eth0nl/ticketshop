@@ -1,0 +1,4 @@
+coverage
+django-coverage
+django-debug-toolbar
+-r requirements.txt

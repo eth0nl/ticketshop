@@ -1,0 +1,7 @@
+*.pyc
+*~
+*/settings/secrets.py
+.coverage
+htmlcov/
+media/
+search_index/
