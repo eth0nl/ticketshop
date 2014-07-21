@@ -73,6 +73,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'ticketshop',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -81,7 +82,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django_extensions',
-    'ticketshop',
+    'registration',
 )
 
 IGNORABLE_404_URLS = (
@@ -120,3 +121,13 @@ LOGGING = {
 
 SESSION_COOKIE_HTTPONLY = True
 FORMAT_MODULE_PATH = 'ticketshop.settings.locale'
+from django.core.urlresolvers import reverse_lazy
+LOGIN_URL = reverse_lazy('login')
+LOGOUT_URL = reverse_lazy('logout')
+LOGIN_REDIRECT_URL = '/'
+REGISTRATION_COMPLETE_URL = '/'
+
+ALLOWED_HOSTS = ['.eth0.nl']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True

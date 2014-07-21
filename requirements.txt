@@ -1,3 +1,4 @@
 Django>=1.7
 django-extensions>=1.1.1
 psycopg2>=2.5.3
+-e git://github.com/dekkers/django-registration.git@9946f96440c6051637fdaedabce80efb386c899c#egg=django_registration-master

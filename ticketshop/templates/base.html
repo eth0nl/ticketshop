@@ -2,10 +2,22 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/eth0-clean.css" type="text/css">
     {% block extra_head %}{% endblock %}
   </head>
 
   <body>
-    {% block content %}{% endblock %}
+    <div class="header">
+      <img id="logo" src="/static/logo.png" alt="logo" />
+      <h1>Ticketshop</h1>
+    </div>
+    <div class="block">
+      {% block content %}{% endblock %}
+    </div>
+    <div class="block">
+      <address>
+        <a href="https://www.eth0.nl/">eth0</a> - Wilhelminaplein 12 - 8911 BS - Leeuwarden - The Netherlands - tickets@eth0.nl -
+        +31647683716</address>
+    </div>
   </body>
 </html>
