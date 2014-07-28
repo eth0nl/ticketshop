@@ -9,9 +9,9 @@
 {% else %}
 <h1>{{ view.event.name }}</h1>
 <div class="content">
-  <p>You can order your {{ event.name }} tickets through this website.</p>
-  <p>The event will be held from {{ event.start|date:"l, F j, Y" }} to {{ event.end|date:"l, F j, Y" }} at {{event.location }}.</p>
-  <p>For more information prior to your order please consult the <a href="{{ event.url }}">website</a>.</p>
+  <p>You can order your {{ view.event.name }} tickets through this website.</p>
+  <p>The event will be held from {{ view.event.start|date:"l, F j, Y" }} to {{ view.event.end|date:"l, F j, Y" }} at {{view.event.location }}.</p>
+  <p>For more information prior to your order please consult the <a href="{{ view.event.url }}">website</a>.</p>
   <p>We accept:</p>
   <ul>
     <li>Ideal</li>
