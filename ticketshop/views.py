@@ -147,6 +147,8 @@ The {name} team
 
 class WebhookView(View):
     def post(self, request, *args, **kwargs):
+        if 'testByMollie' in request.GET:
+            return HttpResponse()
         payment = mollie.payments.get(request.POST['id'])
         order = Order.objects.get(payment_id=payment['id'])
         if payment['status'] == 'paid':
