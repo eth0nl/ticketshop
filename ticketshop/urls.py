@@ -4,14 +4,22 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.decorators.csrf import csrf_exempt
 
 from registration.backends.simple.views import RegistrationView
+
+from .views import ConfirmView, HomeView, OrderDetailView, TermsView, WebhookView
 
 urlpatterns = patterns(
     '',
     # url(r'^$', 'ticketshop.views.home', name='home'),
     # url(r'^ticketshop/', include('ticketshop.foo.urls')),
 
+    url(r'^$', HomeView.as_view(), name='home'),
+    url(r'^confirm/$', ConfirmView.as_view(), name='confirm'),
+    url(r'^order/(?P<pk>\d+)/$', OrderDetailView.as_view(), name='order_detail'),
+    url(r'^terms/$', TermsView.as_view(), name='terms'),
+    url(r'^webhook/$', csrf_exempt(WebhookView.as_view()), name='webhook'),
     url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
     url(r'^password_reset/$', 'django.contrib.auth.views.password_reset', name='password_reset'),

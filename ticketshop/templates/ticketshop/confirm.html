@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ view.event.name }}</h1>
+<h2>Order overview</h2>
+<div class="content">
+  <table>
+    {% for ticket in tickets %}
+    <tr>
+      <td>{{ ticket.name }}</td><td class="count">{{ ticket.count }}x € {{ ticket.price}}</td><td class="total">€ {{ ticket.total }}</td>
+    </tr>
+    {% endfor %}
+    {% if bar_credids %}
+    <tr>
+      <td colspan="2">Bar credits</td><td class="total">€ {{ bar_credits }}</td>
+    </tr>
+    {% endif %}
+    {% if donation %}
+    <tr>
+      <td colspan="2">Donation</td><td class="total">€ {{ donation }}</td>
+    </tr>
+    {% endif %}
+    <tr class="total">
+      <td colspan="2">Total</td><td class="total">€ {{ total }}</td>
+    </tr>
+  </table>
+  <form action="" method="post">{% csrf_token %}
+    <input type="submit" value="Go to payment">
+  </form>
+</div>
+{% endblock %}

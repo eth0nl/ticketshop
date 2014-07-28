@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Order details</h1>
+<div class="content">
+  <table>
+    {% for ticket in tickets %}
+    <tr>
+      <td>{{ ticket.name }}</td><td class="count">{{ ticket.count }}x € {{ ticket.price}}</td><td class="total">€ {{ ticket.total }}</td>
+    </tr>
+    {% endfor %}
+    {% if order.bar_credids %}
+    <tr>
+      <td colspan="2">Bar credits</td><td class="total">€ {{ order.bar_credits }}</td>
+    </tr>
+    {% endif %}
+    {% if order.donation %}
+    <tr>
+      <td colspan="2">Donation</td><td class="total">€ {{ order.donation }}</td>
+    </tr>
+    {% endif %}
+    <tr class="total">
+      <td colspan="2">Total</td><td class="total">€ {{ order.amount }}</td>
+    </tr>
+  </table>
+
+  <p>The status of this order is <b>{{ order.get_status_display }}</b>.</p>
+</div>
+{% endblock %}

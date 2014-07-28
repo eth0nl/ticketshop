@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}eth0 Ticketshop{% endblock %}</title>
     <link rel="stylesheet" href="/static/eth0-clean.css" type="text/css">
+    <link rel="icon" type="image/png" href="/static/favicon-196x196.png" sizes="196x196">
+    <link rel="icon" type="image/png" href="/static/favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="/static/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/static/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/static/favicon-32x32.png" sizes="32x32">
     {% block extra_head %}{% endblock %}
   </head>
 
   <body>
     <div class="header">
-      <img id="logo" src="/static/logo.png" alt="logo" />
+      <a href="/"><img id="logo" src="/static/logo.png" alt="logo" /></a>
       <h1>Ticketshop</h1>
     </div>
     <div class="block">
+      {% if view.request.user.is_authenticated %}
+      <a href="/logout/" id="topcornerlink">log out</a>
+      {% endif %}
       {% block content %}{% endblock %}
     </div>
     <div class="block">

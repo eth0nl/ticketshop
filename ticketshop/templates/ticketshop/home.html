@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if not view.event %}
+<div class="content">
+  <p>The ticketshop is closed. You can go to the <a href="https://wiki.eth0.nl">website</a> for more information.</p>
+</div>
+{% else %}
+<h1>{{ view.event.name }}</h1>
+<div class="content">
+  <p>You can order your {{ event.name }} tickets through this website.</p>
+  <p>The event will be held from {{ event.start|date:"l, F j, Y" }} to {{ event.end|date:"l, F j, Y" }} at {{event.location }}.</p>
+  <p>For more information prior to your order please consult the <a href="{{ event.url }}">website</a>.</p>
+  <p>We accept:</p>
+  <ul>
+    <li>Ideal</li>
+    <li>Bitcoin</li>
+    <li>Direct bank transfer (IBAN / SEPA)</li>
+    <li>If we're not sold out, you will also be able to pay at the door.</li>
+  </ul>
+</div>
+<h2>Tickets</h2>
+<div class="content">
+  {% if view.request.user.is_authenticated %}
+  <p>Order tickets:</p>
+  <form action="" method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <ul class="ticketsale">
+      {% for ticket_field in form.ticket_fields %}
+      {{ ticket_field.errors }}
+      {% with ticket=ticket_field.field.ticket %}
+      <li>
+        {{ ticket_field }}
+        {{ ticket.event }} {{ ticket.name }}<strong class="price">€ {{ ticket.price}}</strong><br>
+        <i>{{ ticket.description }}</i>
+      </li>
+      {% endwith %}
+      {% endfor %}
+      <hr>
+      <li>
+        {{ form.bar_credits }}
+        10 euro worth of bar credits<strong class="price">€ 10</strong><br>
+        <i>To buy beverages at the bar</i>
+      </li>
+    </ul>
+    {{ form.donations.error }}
+    <p>Donation (optional): € {{ form.donation }}</p>
+    {% if form.conditions.errors %}
+    <ul class="errorlist"><li>You have to agree to the terms and conditions.</li></ul>
+    {% endif %}
+    <p>{{ form.conditions }} I agree to the <a href="{% url 'terms' %}">terms and conditions</a></p>
+
+    <input type="submit" value="Continue">
+  </form>
+{% if orders %}
+</div>
+</div>
+<div class="block">
+<h2>Your orders</h2>
+<div class="content">
+<table>
+<tr>
+  <th>Order ID</th>
+  <th>Time</th>
+  <th>Amount</th>
+  <th>Status</th>
+</tr>
+{% for order in orders %}
+<tr>
+  <td><a href="{{ order.get_absolute_url }}">{{ order.id }}</a></td>
+  <td>{{ order.timestamp }}</td>
+  <td>€ {{ order.amount }}</td>
+  <td>{{ order.get_status_display }}</td>
+{% endfor %}
+</table>
+
+{% endif %}
+  {% else %}
+  <p>We have the following tickets available:</p>
+  <ul>
+  {% for ticket in view.tickets %}
+    <li>{{ ticket.event }} {{ ticket.name }}<strong class="price">€ {{ ticket.price}}</strong><br> <i>{{ ticket.description }}</i></li>
+  {% endfor %}
+  </ul>
+
+  <p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'registration_register' %}">sign up</a> to order tickets.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

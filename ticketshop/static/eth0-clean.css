@@ -11,29 +11,10 @@ body div {
     text-align: left;
 }
 
-.hide {
-    display: none;
-}
-.show {
-    display: block;
-}
-.clear {
-    clear:both;
-}
-.center {
-    text-align: center;
-}
-
 /* layout */
 
 .block h2 {
     font-size: 18px;
-}
-p.message {
-    font-size: 14px;
-    font-weight: bold;
-    padding-right: 2em;
-    margin-left: 2em;
 }
 .block h1, h2, h3, h4 {
     color: #96d321;
@@ -41,15 +22,14 @@ p.message {
     width: 50%;
     font-weight: normal;
     margin-left: 0;
-    padding-left: 1em;
+    padding-left: 24px;
 }
-p.message em {
-    font-size: 115%;
-}
+
 p.comment {
     font-size: 1em;
     font-weight: bold;
 }
+
 h4 {
     font-size: 1em;
     font-weight: bold;
@@ -96,7 +76,8 @@ a:hover {
 }
 
 .content {
-    padding-left: 1em;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 .sub_block
@@ -116,26 +97,13 @@ a:hover {
     overflow: auto;
 }
 
-.error_box
-{
-    border:2px solid #ff0000;
-}
-
 .block ul {
     padding-left: 2em;
     margin-bottom: 1.5em;
-    margin-left: 2em;
 }
 .block ul li {
-    height: 2.0em;
-    padding: 0;
-}
-img#ideal {
-    height: 2.4em;
-    position: relative;
-    top: .3em;
-    margin-top: -.5em;
-    margin-bottom: -.5em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
 }
 
 dt {
@@ -147,149 +115,17 @@ dd {
     font-weight: normal;
 }
 
-dl.line {
-    padding: 0;
-    margin: 0;
-}
-dl.line dt {
-    float: left;
-    padding: .2em 0em 0em 0em;
-    margin: 0;
-    height: 1em;
-}
-dl.line dd {
-    float: left;
-    padding: .5em .5em 0 .5em;
-    margin: 0;
+ul.ticketsale {
+    padding-left: 0px;
 }
 
-dl.tickets {
-    padding: 0;
-    margin: 0;
-}
-dl.tickets dt {
-    float: left;
-    clear: left;
-    padding: .2em 0em 0em 0em;
-    margin: 0;
-    height: 3em;
-}
-dl.tickets dd {
-    float: left;
-    padding: .5em;
-    margin: 0;
-    width: 32em;
-}
-dl.tickets dt.separator {
-    margin: 1em 0em 1em -.5em;
-    background-color: rgb(0,0,0);
-    padding: 0px;
-    width: 80%;
-    height: 1px;
-}
-dl.tickets dd .price {
-    display: block;
-    width: 10em;
-    float: right;
+.ticketsale li {
+    list-style: none;
 }
 
-dl.radiolist {
-    padding: 0;
-    margin: 0 0 0 3em;
-}
-dl.radiolist dt {
+.ticketsale select {
     float: left;
-    clear: left;
-    padding: .2em 0em 0em 0em;
-    margin: 0;
-    height: 2em;
-}
-dl.radiolist dd {
-    float: left;
-    padding: .5em;
-    margin: 0;
-    width: 34em;
-}
-.sub_block dl.radiolist {
-    margin: 0;
-}
-.sub_block dl.radiolist dd {
-    float: left;
-    padding: .5em;
-    margin: 0;
-    width: 20em;
-}
-
-table.calc {
-    margin: 1em .5em .5em 3em;
-    border-spacing: 0;
-}
-table.calc td {
-    padding: .2em 1em .5em 1em;
-}
-table.calc .desc {
-    width: 15em;
-}
-table.calc .count {
-    width: 3em;
-}
-table.calc .price {
-    text-align: right;
-}
-table.calc .total td {
-    border-width: 2px 0 0 0;
-    border-style: solid;
-    border-color: Black;
-    padding: 1em 1em .5em 1em;
-}
-table.calc .total .desc {
-    width: 15em;
-    font-weight: bold;
-}
-
-.checkbox {
-    margin: 0 .5em 0 0;
-    border: 1px;
-    border-color: #999;
-    border-style: solid;
-}
-.inputfield {
-    width: 20em;
-    border: 1px;
-    border-color: #999;
-    border-style: solid;
-}
-.shortfield {
-    width: 8em;
-    border: 1px;
-    border-color: #999;
-    border-style: solid;
-}
-.ccfield {
-    width: 16em;
-    border: 1px;
-    border-color: #999;
-    border-style: solid;
-}
-.cvcfield {
-    width: 3em;
-    border: 1px;
-    border-color: #999;
-    border-style: solid;
-}
-.moneyfield {
-    width: 4em;
-    border: 1px;
-    border-color: #999;
-    border-style: solid;
-    text-align: right;
-}
-.pubkey {
-    width: 38em;
-    height: 10em;
-    border: 1px;
-    border-color: #999;
-    border-style: solid;
+    margin-right: 10px;
 }
 
 input[type=submit], button {
@@ -297,33 +133,6 @@ input[type=submit], button {
     font: 1em verdana, arial, sans-serif;
     color: #444;
     border: 1px solid #999;
-}
-button.next {
-    float:right;
-}
-button.previous {
-    float:left;
-}
-button.center {
-    text-align: center;
-}
-input:focus {
-    background-color: #ffffc0;
-}
-
-/* relates to corporate ticket page */
-.imglink img {
-    border: none;
-    width: 11em;
-    padding-bottom: 0.5em;
-}
-.leftimg img {
-    float: left;
-    padding-right: 0.5em;
-}
-.rightimg img {
-    float: right;
-    padding-left: 0.5em;
 }
 
 address {
@@ -340,4 +149,40 @@ ul.errorlist li{
     color: red;
     border: 0px;
     display: inline;
+}
+
+.price {
+    display: block;
+    width: 10em;
+    float: right;
+}
+
+#id_donation {
+    width: 3em;
+}
+
+table {
+    border-spacing: 0;
+}
+
+td.total, td.count, td.amount {
+    padding-left: 20px;
+    text-align: right;
+}
+
+tr.total td {
+    border-width: 1px 0 0 0;
+    border-color: black;
+    border-style: solid;
+}
+
+td, th {
+    padding-right: 30px;
+}
+
+#topcornerlink {
+    float: right;
+    margin-right: 5px;
+    margin-bottom: -30px;
+    text-decoration: none;
 }

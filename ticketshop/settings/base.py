@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django_extensions',
     'registration',
+    'solo',
 )
 
 IGNORABLE_404_URLS = (
@@ -119,6 +120,7 @@ LOGGING = {
     }
 }
 
+AUTH_USER_MODEL = 'ticketshop.User'
 SESSION_COOKIE_HTTPONLY = True
 FORMAT_MODULE_PATH = 'ticketshop.settings.locale'
 from django.core.urlresolvers import reverse_lazy

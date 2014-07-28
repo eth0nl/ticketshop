@@ -1,6 +1,10 @@
 # Django development settings for ticketshop project.
 
 from .base import *
+try:
+    from .secrets import *
+except ImportError:
+    pass
 
 import os
 import warnings
