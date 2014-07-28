@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import DetailView, FormView, TemplateView, View
 
@@ -134,16 +133,6 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 
         return context
 
-email_body = """Hello,
-
-Your payment of € {amount} for your {name} ticket(s) has been
-received. We will send you the ticket(s) a few days before the event.
-
-See you at {name}!
-
-The {name} team
-"""
-
 
 class WebhookView(View):
     def post(self, request, *args, **kwargs):
@@ -151,14 +140,6 @@ class WebhookView(View):
             return HttpResponse()
         payment = mollie.payments.get(request.POST['id'])
         order = Order.objects.get(payment_id=payment['id'])
-        if payment['status'] == 'paid':
-            order.status = order.PAID
-            order.save()
-            subject = 'Your {} payment was received'.format(order.event.name)
-            send_mail(subject, email_body.format(name=order.event.name, amount=order.amount),
-                      "tickets@eth0.nl", [order.user.email])
-        elif payment['status'] == 'cancelled' or payment['status'] == 'expired':
-            order.status = order.CANCELLED
-            order = order.save()
+        order.check_payment_status(payment)
 
         return HttpResponse()

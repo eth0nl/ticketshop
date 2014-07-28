@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -63,6 +65,17 @@ class Ticket(models.Model):
         return "%dx %s" % (self.count, self.type)
 
 
+email_body = """Hello,
+
+Your payment of € {amount} for your {name} ticket(s) has been
+received. We will send you the ticket(s) a few days before the event.
+
+See you at {name}!
+
+The {name} team
+"""
+
+
 @python_2_unicode_compatible
 class Order(models.Model):
     PENDING, PAID, CANCELLED, USED = range(4)
@@ -98,3 +111,14 @@ class Order(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('order_detail', [self.id])
+
+    def check_payment_status(self, payment):
+        if payment['status'] == 'paid':
+            self.status = self.PAID
+            self.save()
+            subject = 'Your {} payment was received'.format(self.event.name)
+            send_mail(subject, email_body.format(name=self.event.name, amount=self.amount),
+                      "tickets@eth0.nl", [self.user.email])
+        elif payment['status'] == 'cancelled' or payment['status'] == 'expired':
+            self.status = self.CANCELLED
+            self.save()
