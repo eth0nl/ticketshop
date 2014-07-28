@@ -38,13 +38,14 @@
       {% endwith %}
       {% endfor %}
       <hr>
+      {{ form.bar_credits.errors }}
       <li>
         {{ form.bar_credits }}
         10 euro worth of bar credits<strong class="price">€ 10</strong><br>
         <i>To buy beverages at the bar</i>
       </li>
     </ul>
-    {{ form.donations.error }}
+    {{ form.donation.errors }}
     <p>Donation (optional): € {{ form.donation }}</p>
     {% if form.conditions.errors %}
     <ul class="errorlist"><li>You have to agree to the terms and conditions.</li></ul>
