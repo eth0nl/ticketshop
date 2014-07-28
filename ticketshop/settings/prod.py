@@ -21,3 +21,11 @@ DATABASES = {
 }
 
 STATIC_ROOT = '/srv/static/ticketshop'
+
+INSTALLED_APPS += (
+    'raven.contrib.django.raven_compat',
+)
+
+RAVEN_CONFIG = {
+    'dsn': 'https://35eb1915bd7c4208a70080d0bdcc5d94:%s@sentry.pyzuka.nl/3' % RAVEN_PASSWORD,
+}
