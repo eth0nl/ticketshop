@@ -10,7 +10,7 @@
       <td>{{ ticket.name }}</td><td class="count">{{ ticket.count }}x € {{ ticket.price}}</td><td class="total">€ {{ ticket.total }}</td>
     </tr>
     {% endfor %}
-    {% if order.bar_credids %}
+    {% if order.bar_credits %}
     <tr>
       <td colspan="2">Bar credits</td><td class="total">€ {{ order.bar_credits }}</td>
     </tr>
