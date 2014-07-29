@@ -84,6 +84,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'registration',
     'solo',
+    'adminplus',
 )
 
 IGNORABLE_404_URLS = (

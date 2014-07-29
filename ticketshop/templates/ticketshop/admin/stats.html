@@ -1,0 +1,21 @@
+{% extends 'adminplus/base.html' %}
+
+{% block content %}
+<table>
+  {% for ticket in tickets %}
+  <tr>
+    <td style="padding-right: 20px;">{{ ticket.name }}</td><td style="text-align: right;">{{ ticket.count }}x</td>
+    <td style="padding-right: 30px; text-align: right;"> € {{ ticket.price}}</td><td style="text-align: right;">€ {{ ticket.total }}</td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td colspan="3">Bar credits</td><td style="text-align: right;">€ {{ bar_credits }}</td>
+  </tr>
+  <tr>
+    <td colspan="3">Donation</td><td style="text-align: right;">€ {{ donation }}</td>
+  </tr>
+  <tr class="total">
+    <td colspan="3">Total</td><td style="text-align: right;">€ {{ total }}</td>
+  </tr>
+</table>
+{% endblock %}

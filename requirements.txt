@@ -6,3 +6,4 @@ mollie-api-python==1.0.0
 requests==2.3.0
 django-solo==1.0.5
 raven==5.0.0
+django-adminplus==0.3
