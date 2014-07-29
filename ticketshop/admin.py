@@ -43,6 +43,7 @@ def stats(request):
 
     context['bar_credits'] = Order.objects.filter(event=event, status=Order.PAID).aggregate(bar_credits=Sum('bar_credits'))['bar_credits']
     context['donation'] = Order.objects.filter(event=event, status=Order.PAID).aggregate(donation=Sum('donation'))['donation']
+    context['total'] += context['bar_credits'] + context['donation']
 
     return render_to_response('ticketshop/admin/stats.html',
                               context,
