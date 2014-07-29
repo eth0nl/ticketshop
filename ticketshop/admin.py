@@ -37,8 +37,9 @@ def stats(request):
     context['total'] = 0
     for ticket in TicketType.objects.filter(event=event):
         count = Ticket.objects.filter(order__event=event, order__status=Order.PAID, type=ticket).aggregate(count=Sum('count'))['count']
-        context['tickets'].append({'count': count, 'total': count * ticket.price, 'name': ticket.name, 'price': ticket.price})
-        context['total'] += count * ticket.price
+        if count:
+            context['tickets'].append({'count': count, 'total': count * ticket.price, 'name': ticket.name, 'price': ticket.price})
+            context['total'] += count * ticket.price
 
     context['bar_credits'] = Order.objects.filter(event=event, status=Order.PAID).aggregate(bar_credits=Sum('bar_credits'))['bar_credits']
     context['donation'] = Order.objects.filter(event=event, status=Order.PAID).aggregate(donation=Sum('donation'))['donation']
