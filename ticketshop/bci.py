@@ -132,10 +132,10 @@ class BarcodeImage(object):
 
         # Show at most 20px of barcode on either side of the text:
         visible_margin = min(20, (width - text_width - 4) / 2)
-        draw.rectangle(((visible_margin, height - text_height),
+        draw.rectangle(((visible_margin, height - text_height - 4),
                         (width - visible_margin, height)),
                        fill=255)
-        draw.text(((width - text_width) / 2, height - text_height),
+        draw.text(((width - text_width) / 2, height - text_height - 4),
                   text, font=self.font)
         return image
 
