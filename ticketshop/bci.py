@@ -6,9 +6,9 @@ __all__ = 'BarcodeImage',
 
 # Standard modules
 import cStringIO
-import Image
-import ImageDraw
-import ImageFont
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 
 
 class BarcodeImage(object):
