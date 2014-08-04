@@ -15,7 +15,7 @@ admin.site = AdminSitePlus()
 
 class TicketInline(admin.TabularInline):
     model = Ticket
-    extra = 1
+    extra = 0
 
 
 class OrderAdmin(admin.ModelAdmin):
