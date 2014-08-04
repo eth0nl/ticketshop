@@ -78,168 +78,177 @@ ENCODED_VALUES = [
 
 TERMINATION_BAR = '11'
 
+
 class Code128(object):
-  """Barcode generator for Code128 barcodes.
 
-  To use this class, create an instance and call it with a string argument to
-  receive an encoded string with which a barcode can be easily constructed.
+    """Barcode generator for Code128 barcodes.
 
-  Members:
-    @ A: dict
-      Maps the characters of subcode A to their position and encoded value.
-    @ B: dict
-      Maps the characters of subcode B to their position and encoded value.
-    @ C: dict
-      Maps the characters of subcode C to their position and encoded value.
+    To use this class, create an instance and call it with a string argument to
+    receive an encoded string with which a barcode can be easily constructed.
 
-  Methods
-    @ _ChangeSubcode
-      Changes or sets the Code128 subcode to be used.
-    @ _ProcessChar
-      Decides on which subcode to use for processing the next character(s).
-    @ _WriteElement
-      Adds an element to the barcode and updates element count and checksum.
-    @ _WriteEnd
-      Writes checksum and closing barcode elements.
-    % Calling (__call__)
-      Returns the Code128 encoded string of the input.
-  """
-  A = dict(zip(SUBCODE_A, enumerate(ENCODED_VALUES)))
-  B = dict(zip(SUBCODE_B, enumerate(ENCODED_VALUES)))
-  C = dict(zip(SUBCODE_C, enumerate(ENCODED_VALUES)))
+    Members:
+      @ A: dict
+        Maps the characters of subcode A to their position and encoded value.
+      @ B: dict
+        Maps the characters of subcode B to their position and encoded value.
+      @ C: dict
+        Maps the characters of subcode C to their position and encoded value.
 
-  def __init__(self, debug=False):
-    """Initializes a new Code128 generator.
-
-    Arguments:
-      % debug: bool ~~ False
-        Flags whether verbose debug output should be printed to the commandline.
+    Methods
+      @ _ChangeSubcode
+        Changes or sets the Code128 subcode to be used.
+      @ _ProcessChar
+        Decides on which subcode to use for processing the next character(s).
+      @ _WriteElement
+        Adds an element to the barcode and updates element count and checksum.
+      @ _WriteEnd
+        Writes checksum and closing barcode elements.
+      % Calling (__call__)
+        Returns the Code128 encoded string of the input.
     """
-    self.barcode = []
-    self.checksum = 0
-    self.debug = debug
-    self.subcode = {}
+    A = dict(zip(SUBCODE_A, enumerate(ENCODED_VALUES)))
+    B = dict(zip(SUBCODE_B, enumerate(ENCODED_VALUES)))
+    C = dict(zip(SUBCODE_C, enumerate(ENCODED_VALUES)))
 
-  def __call__(self, text):
-    """Returns the Code128 encoded string of the input.
+    def __init__(self, debug=False):
+        """Initializes a new Code128 generator.
 
-    The output will be a string consisting of ones and zeroes. A one signifies
-    a bar, a zero signifies a space. The returned string is a complete and valid
-    Code128 barcode (including start, stop, checksum, and termination bar).
+        Arguments:
+          % debug: bool ~~ False
+            Flags whether verbose debug output should be printed to the commandline.
+        """
+        self.barcode = []
+        self.checksum = 0
+        self.debug = debug
+        self.subcode = {}
 
-    Arguments:
-      @ text: str / iterable of str
-        Input text to be converted to Code128. In case you need access to
-        code128 control codes, provide an iterable with these codes specified.
+    def __call__(self, text):
+        """Returns the Code128 encoded string of the input.
 
-    Returns:
-      str: The input text as a Code128 string of ones and zeroes.
-    """
-    self.barcode = []
-    self.subcode = {}
-    self.checksum = 0
-    skip_one = False
-    for index in xrange(len(text)):
-      if skip_one:
-        # Skipping one loop since the previous encoded two digits in subcode C.
+        The output will be a string consisting of ones and zeroes. A one signifies
+        a bar, a zero signifies a space. The returned string is a complete and valid
+        Code128 barcode (including start, stop, checksum, and termination bar).
+
+        Arguments:
+          @ text: str / iterable of str
+            Input text to be converted to Code128. In case you need access to
+            code128 control codes, provide an iterable with these codes specified.
+
+        Returns:
+          str: The input text as a Code128 string of ones and zeroes.
+        """
+        self.barcode = []
+        self.subcode = {}
+        self.checksum = 0
         skip_one = False
-        continue
-      else:
-        skip_one = self._ProcessChar(index, text)
+        for index in xrange(len(text)):
+            if skip_one:
+                # Skipping one loop since the previous encoded two digits in
+                # subcode C.
+                skip_one = False
+                continue
+            else:
+                skip_one = self._ProcessChar(index, text)
 
-    self._WriteEnd()
-    if self.debug:
-      print 'Wrote %d glyphs for %d chars of input (efficiency: %.f%%)\n' % (
-          len(self.barcode), len(text), 100.0 * len(text) / len(self.barcode))
-    return ''.join(self.barcode)
+        self._WriteEnd()
+        if self.debug:
+            print 'Wrote %d glyphs for %d chars of input (efficiency: %.f%%)\n' % (
+                len(self.barcode), len(text), 100.0 * len(text) / len(self.barcode))
+        return ''.join(self.barcode)
 
-  def _ChangeSubcode(self, subcode):
-    """Changes or sets the Code128 subcode to be used.
+    def _ChangeSubcode(self, subcode):
+        """Changes or sets the Code128 subcode to be used.
 
-    Arguments:
-      @ subcode: str
-        'A', 'B', or 'C', referring to the Code128 subcodes.
-    """
-    subcode_dict = getattr(self, subcode)
-    if self.subcode == subcode_dict:
-      return
-    elif self.subcode:
-      if self.debug:
-        print '* Changing to subcode %s' % subcode
-      self._WriteElement('Code %c' % subcode)
-      self.subcode = subcode_dict
-    else:
-      if self.debug:
-        print '* Starting in subcode %s' % subcode
-      self.subcode = subcode_dict
-      self._WriteElement('START %c' % subcode)
+        Arguments:
+          @ subcode: str
+            'A', 'B', or 'C', referring to the Code128 subcodes.
+        """
+        subcode_dict = getattr(self, subcode)
+        if self.subcode == subcode_dict:
+            return
+        elif self.subcode:
+            if self.debug:
+                print '* Changing to subcode %s' % subcode
+            self._WriteElement('Code %c' % subcode)
+            self.subcode = subcode_dict
+        else:
+            if self.debug:
+                print '* Starting in subcode %s' % subcode
+            self.subcode = subcode_dict
+            self._WriteElement('START %c' % subcode)
 
-  def _ProcessChar(self, index, text):
-    """Decides on which subcode to use for processing the next character(s).
+    def _ProcessChar(self, index, text):
+        """Decides on which subcode to use for processing the next character(s).
 
-    Arguments:
-      @ index: int
-        The character number to process.
-      @ text: iterable
-        The character / operator stream to process from. This is needed since
-        Subcode C optimizations require lookahead.
+        Arguments:
+          @ index: int
+            The character number to process.
+          @ text: iterable
+            The character / operator stream to process from. This is needed since
+            Subcode C optimizations require lookahead.
 
-      Returns:
-        bool: whether or not the next index should be skipped by the caller.
-    """
-    if (len(text[index:]) >= 4 and ''.join(text[index:index + 4]).isdigit() or
-        len(text[index:]) >= 2 and ''.join(text[index:index + 2]).isdigit() and
-        (not self.subcode or self.subcode == self.C)):
-      # Subcode C is optimized for double digit numbers and is triggered in
-      # the following situations:
-      # * The next four chars are numbers, changing to subcode C makes sense.
-      # * The next two chars are numbers, and we are already in subcode C.
-      # * The next two chars are numbers, and we still have to choose subcode.
-      self._ChangeSubcode('C')
-      self._WriteElement(''.join(text[index:index + 2]))
-      return True
+          Returns:
+            bool: whether or not the next index should be skipped by the caller.
+        """
+        if (len(text[index:]) >= 4 and ''.join(text[index:index + 4]).isdigit() or
+            len(text[index:]) >= 2 and ''.join(text[index:index + 2]).isdigit() and
+                (not self.subcode or self.subcode == self.C)):
+            # Subcode C is optimized for double digit numbers and is triggered in
+            # the following situations:
+            # * The next four chars are numbers, changing to subcode C makes sense.
+            # * The next two chars are numbers, and we are already in subcode C.
+            # * The next two chars are numbers, and we still have to choose subcode.
+            self._ChangeSubcode('C')
+            self._WriteElement(''.join(text[index:index + 2]))
+            return True
 
-    char = text[index]
-    if char not in self.subcode:
-      # The character isn't in the current subcode, find one that contains it.
-      # We prefer subcode B as it contains more commonly printed characters.
-      if char in self.B:
-        self._ChangeSubcode('B')
-      elif char in self.A:
-        self._ChangeSubcode('A')
-      else:
-        raise ValueError('Charachter %r could not be encoded.' % char)
+        char = text[index]
+        if char not in self.subcode:
+            # The character isn't in the current subcode, find one that contains it.
+            # We prefer subcode B as it contains more commonly printed
+            # characters.
+            if char in self.B:
+                self._ChangeSubcode('B')
+            elif char in self.A:
+                self._ChangeSubcode('A')
+            else:
+                raise ValueError('Charachter %r could not be encoded.' % char)
 
-    # By now, we have the correct subcode for the character and we can write it.
-    self._WriteElement(char)
+        # By now, we have the correct subcode for the character and we can
+        # write it.
+        self._WriteElement(char)
 
-  def _WriteElement(self, element):
-    """Adds an element to the barcode and updates element count and checksum.
+    def _WriteElement(self, element):
+        """Adds an element to the barcode and updates element count and checksum.
 
-    Arguments:
-      @ element: str
-        The element to add to the barcode.
-    """
-    if self.debug:
-      print 'Writing element %r' % element
-    index, value = self.subcode[element]
-    self.checksum = (self.checksum + index * max(len(self.barcode), 1)) % 103
-    self.barcode.append(value)
+        Arguments:
+          @ element: str
+            The element to add to the barcode.
+        """
+        if self.debug:
+            print 'Writing element %r' % element
+        index, value = self.subcode[element]
+        self.checksum = (
+            self.checksum + index * max(len(self.barcode), 1)) % 103
+        self.barcode.append(value)
 
-  def _WriteEnd(self):
-    """Writes checksum and closing barcode elements."""
-    if self.debug:
-      print 'Writing checksum: #%d' % self.checksum
-    self.barcode.append(ENCODED_VALUES[self.checksum])
-    self.barcode.append(self.subcode['STOP'][1])  # [1] is the barcode element.
-    self.barcode.append(TERMINATION_BAR)
+    def _WriteEnd(self):
+        """Writes checksum and closing barcode elements."""
+        if self.debug:
+            print 'Writing checksum: #%d' % self.checksum
+        self.barcode.append(ENCODED_VALUES[self.checksum])
+        self.barcode.append(
+            self.subcode['STOP'][1])  # [1] is the barcode element.
+        self.barcode.append(TERMINATION_BAR)
 
 
 class SymbolControlCoder(Code128):
-  """Created control codes for Symbol barcode scanners.
 
-  Works identical to Code128, only prefixing [FNC3] to all barcodes.
-  This forces the Symbol to interpret the codes as configuration control codes.
-  """
-  def __call__(self, text):
-    return super(SymbolControlCoder, self).__call__(['FNC3'] + list(text))
+    """Created control codes for Symbol barcode scanners.
+
+    Works identical to Code128, only prefixing [FNC3] to all barcodes.
+    This forces the Symbol to interpret the codes as configuration control codes.
+    """
+
+    def __call__(self, text):
+        return super(SymbolControlCoder, self).__call__(['FNC3'] + list(text))
