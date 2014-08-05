@@ -1,13 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 
+import os
+import random
+import string
+
 from solo.models import SingletonModel
+import weasyprint
+
+from .code128 import Code128
+from .bci import BarcodeImage
 
 
 class User(AbstractUser):
@@ -68,12 +78,16 @@ class Ticket(models.Model):
 email_body = """Hello,
 
 Your payment of € {amount} for your {name} ticket(s) has been
-received. We will send you the ticket(s) a few days before the event.
+received. The PDF of your ticket is attached to this e-mail.
 
 See you at {name}!
 
 The {name} team
 """
+
+
+def generate_random_code():
+    return ''.join(random.sample(string.ascii_letters + string.digits, 7))
 
 
 @python_2_unicode_compatible
@@ -93,9 +107,24 @@ class Order(models.Model):
     donation = models.PositiveIntegerField(default=0)
     payment_id = models.CharField(max_length=30, blank=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
+    code = models.CharField(max_length=10, default=generate_random_code)
+    barcode = models.ImageField(upload_to="barcode", editable=False)
 
     def __str__(self):
         return "Order %s" % self.id
+
+    def save(self, *args, **kwargs):
+        if not self.barcode:
+            font = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono-Bold.ttf"
+            imager = BarcodeImage(Code128(), font_file=font, font_size=20,
+                                  barwidth=2, dpi=192, height=65)
+            directory = os.path.join(settings.MEDIA_ROOT, 'barcode')
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            filename = os.path.join(directory, self.code + '.png')
+            imager(self.code, self.code, output=filename)
+            self.barcode.name = os.path.join('barcode', self.code + '.png')
+        super(Order, self).save(*args, **kwargs)
 
     @cached_property
     def amount(self):
@@ -112,13 +141,29 @@ class Order(models.Model):
     def get_absolute_url(self):
         return ('order_detail', [self.id])
 
+    @models.permalink
+    def get_pdf_url(self):
+        return ('order_pdf', [self.id])
+
     def check_payment_status(self, payment):
         if payment['status'] == 'paid':
             self.status = self.PAID
             self.save()
-            subject = 'Your {} payment was received'.format(self.event.name)
-            send_mail(subject, email_body.format(name=self.event.name, amount=self.amount),
-                      "tickets@eth0.nl", [self.user.email])
+            self.email_ticket()
         elif payment['status'] == 'cancelled' or payment['status'] == 'expired':
             self.status = self.CANCELLED
             self.save()
+
+    def send_ticket(self):
+        subject = 'Your {} ticket(s)'.format(self.event.name)
+        body = email_body.format(name=self.event.name, amount=self.amount)
+        email = EmailMessage(subject, body, "tickets@eth0.nl", [self.user.email])
+        tickets = Ticket.objects.filter(order=self)
+        html = render_to_string('ticketshop/order_pdf.html', {'order': self, 'tickets': tickets})
+        pdf = weasyprint.HTML(string=html, base_url=settings.WEASYPRINT_BASEURL).write_pdf()
+        email.attach(self.filename, pdf, 'application/pdf')
+        email.send()
+
+    @property
+    def filename(self):
+        return "ticket_%d.pdf" % self.id

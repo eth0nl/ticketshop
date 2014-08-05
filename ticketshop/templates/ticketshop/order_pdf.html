@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticket</title>
+    <link rel="stylesheet" href="/static/invoice.css" type="text/css">
+  </head>
+
+  <body>
+    <h1>{{ order.event.name }} ticket</h1>
+
+    <img src="{{ order.barcode.url }}" width="{{ order.barcode.width }}" height="{{ order.barcode.height }}">
+    <br><br>
+    <table>
+      {% for ticket in tickets %}
+      <tr>
+        <td>{{ ticket.name }}</td><td class="count">{{ ticket.count }}x € {{ ticket.price}}</td><td class="total">€ {{ ticket.total }}</td>
+      </tr>
+      {% endfor %}
+      {% if order.bar_credits %}
+      <tr>
+        <td colspan="2">Bar credits</td><td class="total">€ {{ order.bar_credits }}</td>
+      </tr>
+      {% endif %}
+      {% if order.donation %}
+      <tr>
+        <td colspan="2">Donation</td><td class="total">€ {{ order.donation }}</td>
+      </tr>
+      {% endif %}
+      <tr class="total">
+        <td colspan="2">Total</td><td class="total">€ {{ order.amount }}</td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from registration.backends.simple.views import RegistrationView
 
-from .views import ConfirmView, HomeView, OrderDetailView, TermsView, WebhookView
+from .views import ConfirmView, HomeView, OrderBarCodeView, OrderDetailView, OrderPdfView, TermsView, WebhookView
 
 urlpatterns = patterns(
     '',
@@ -18,6 +18,8 @@ urlpatterns = patterns(
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^confirm/$', ConfirmView.as_view(), name='confirm'),
     url(r'^order/(?P<pk>\d+)/$', OrderDetailView.as_view(), name='order_detail'),
+    url(r'^order/(?P<pk>\d+)/barcode/$', OrderBarCodeView.as_view(), name='order_barcode'),
+    url(r'^order/(?P<pk>\d+)/pdf/$', OrderPdfView.as_view(), name='order_pdf'),
     url(r'^terms/$', TermsView.as_view(), name='terms'),
     url(r'^webhook/$', csrf_exempt(WebhookView.as_view()), name='webhook'),
     url(r'^login/$', 'django.contrib.auth.views.login', name='login'),

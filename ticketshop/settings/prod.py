@@ -21,6 +21,7 @@ DATABASES = {
 }
 
 STATIC_ROOT = '/srv/static/ticketshop'
+MEDIA_ROOT = '/srv/media/ticketshop'
 
 INSTALLED_APPS += (
     'raven.contrib.django.raven_compat',
@@ -29,3 +30,7 @@ INSTALLED_APPS += (
 RAVEN_CONFIG = {
     'dsn': 'https://35eb1915bd7c4208a70080d0bdcc5d94:%s@sentry.pyzuka.nl/3' % RAVEN_PASSWORD,
 }
+
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('django_downloadview.nginx.XAccelRedirectMiddleware',)
+DOWNLOADVIEW_BACKEND = 'django_downloadview.nginx.XAccelRedirectMiddleware'
+WEASYPRINT_BASEURL = 'https://tickets.eth0.nl/'

@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import DetailView, FormView, TemplateView, View
 
+from django_downloadview import ObjectDownloadView
+from django_weasyprint import PDFTemplateResponseMixin
 import Mollie
 
 from .forms import ConfirmForm, OrderForm
@@ -114,6 +116,17 @@ class ConfirmView(LoginRequiredMixin, FormView):
         return HttpResponseRedirect(payment.getPaymentUrl())
 
 
+class OrderBarCodeView(ObjectDownloadView):
+    model = Order
+    file_field = 'barcode'
+    attachment = False
+    mimetype = 'image/png'
+
+    def get_queryset(self):
+        qs = super(OrderBarCodeView, self).get_queryset()
+        return qs.filter(user=self.request.user)
+
+
 class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
 
@@ -132,6 +145,17 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         context['tickets'] = tickets
 
         return context
+
+
+class OrderPdfView(OrderDetailView, PDFTemplateResponseMixin):
+    template_name = "ticketshop/order_pdf.html"
+
+    def get_queryset(self):
+        qs = super(OrderPdfView, self).get_queryset()
+        return qs.filter(user=self.request.user)
+
+    def get_filename(self):
+        return self.object.filename
 
 
 class WebhookView(View):

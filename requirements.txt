@@ -1,9 +1,11 @@
 Django>=1.7
-django-extensions>=1.1.1
-psycopg2>=2.5.3
--e git://github.com/dekkers/django-registration.git@679f34b2b6fd6161541bfcc0fb3658b24792faff#egg=django_registration-master
-mollie-api-python==1.0.0
-requests==2.3.0
-django-solo==1.0.5
-raven==5.0.0
 django-adminplus==0.3
+django-downloadview==1.6
+django-extensions>=1.1.1
+-e git://github.com/dekkers/django-registration.git@679f34b2b6fd6161541bfcc0fb3658b24792faff#egg=django_registration-master
+django-weasyprint==0.1
+django-solo==1.0.5
+mollie-api-python==1.0.0
+psycopg2>=2.5.3
+raven==5.0.0
+requests==2.3.0

@@ -26,5 +26,11 @@
   </table>
 
   <p>The status of this order is <b>{{ order.get_status_display }}</b>.</p>
+
+  {% if order.get_status_display == "paid" %}
+  <img src="{{ order.barcode.url }}" width="{{ order.barcode.width }}" height="{{ order.barcode.height }}">
+
+  <p><a href="{{ order.get_pdf_url }}">Download ticket</a></p>
+  {% endif %}
 </div>
 {% endblock %}
