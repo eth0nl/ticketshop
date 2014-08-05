@@ -158,7 +158,9 @@ class Order(models.Model):
         subject = 'Your {} ticket(s)'.format(self.event.name)
         body = email_body.format(name=self.event.name, amount=self.amount)
         email = EmailMessage(subject, body, "tickets@eth0.nl", [self.user.email])
-        tickets = Ticket.objects.filter(order=self)
+        tickets = []
+        for ticket in Ticket.objects.filter(order=self):
+            tickets.append({'count': ticket.count, 'name': ticket.type.name, 'price': ticket.type.price, 'total': ticket.count * ticket.type.price})
         html = render_to_string('ticketshop/order_pdf.html', {'order': self, 'tickets': tickets})
         pdf = weasyprint.HTML(string=html, base_url=settings.WEASYPRINT_BASEURL).write_pdf()
         email.attach(self.filename, pdf, 'application/pdf')
