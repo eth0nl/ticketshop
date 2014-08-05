@@ -6,6 +6,7 @@ body {
 table {
     border-spacing: 0;
     margin: 10px auto;
+    text-align: left;
 }
 
 td.total, td.count, td.amount {
