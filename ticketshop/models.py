@@ -89,10 +89,10 @@ class Order(models.Model):
     user = models.ForeignKey('User')
     event = models.ForeignKey('Event')
     tickets = models.ManyToManyField('TicketType', through='Ticket', blank=True)
-    bar_credits = models.PositiveIntegerField()
-    donation = models.PositiveIntegerField()
+    bar_credits = models.PositiveIntegerField(default=0)
+    donation = models.PositiveIntegerField(default=0)
     payment_id = models.CharField(max_length=30, blank=True)
-    status = models.IntegerField(choices=STATUS_CHOICES)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
 
     def __str__(self):
         return "Order %s" % self.id
