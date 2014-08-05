@@ -22,6 +22,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('timestamp', 'event', 'user', 'status', 'bar_credits', 'donation', 'amount')
     list_filter = ('event', 'status')
     inlines = (TicketInline,)
+    readonly_fields = ('admitted_timestamp',)
 
 
 class TicketTypeAdmin(admin.ModelAdmin):

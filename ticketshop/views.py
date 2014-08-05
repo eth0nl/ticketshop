@@ -3,7 +3,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
+from django.utils.timezone import now
 from django.views.generic import DetailView, FormView, TemplateView, View
 
 from django_downloadview import ObjectDownloadView
@@ -167,3 +168,37 @@ class WebhookView(View):
         order.check_payment_status(payment)
 
         return HttpResponse()
+
+
+class ProtectedApiView(View):
+    def post(self, request, *args, **kwargs):
+        event = ActiveEvent.objects.get().event
+        if request.POST['api_key'] != event.api_key:
+            return HttpResponseForbidden()
+
+        return self.protected_post(request, *args, **kwargs)
+
+
+class CheckTicketView(ProtectedApiView):
+    def protected_post(self, request, *args, **kwargs):
+        try:
+            order = Order.objects.get(code=request.POST['ticket_id'])
+        except Order.DoesNotExist:
+            return JsonResponse({'result': 'invalid'})
+
+        if order.status == Order.PAID:
+            response = {'result': 'valid', 'tickets': []}
+            for ticket in Ticket.objects.filter(order=order):
+                response['tickets'].append({'name': ticket.type.name, 'count': ticket.count})
+            response['bar_credits'] = order.bar_credits
+            response['username'] = order.user.username
+
+            order.status = Order.USED
+            order.admitted_timestamp = now()
+            order.save()
+
+            return JsonResponse(response)
+        elif order.status == Order.USED:
+            return JsonResponse({'result': 'used'})
+
+        return JsonResponse({'result': 'invalid'})

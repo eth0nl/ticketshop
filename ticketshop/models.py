@@ -39,6 +39,10 @@ class ActiveEvent(SingletonModel):
             return "No active event"
 
 
+def generate_random_code_16():
+    return ''.join(random.sample(string.ascii_letters + string.digits, 16))
+
+
 @python_2_unicode_compatible
 class Event(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -46,6 +50,7 @@ class Event(models.Model):
     end = models.DateField()
     location = models.CharField(max_length=100)
     url = models.URLField()
+    api_key = models.CharField(max_length=20, default=generate_random_code_16)
 
     def __str__(self):
         return self.name
@@ -109,6 +114,7 @@ class Order(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     code = models.CharField(max_length=10, default=generate_random_code)
     barcode = models.ImageField(upload_to="barcode", editable=False)
+    admitted_timestamp = models.DateTimeField(blank=True, null=True, editable=False)
 
     def __str__(self):
         return "Order %s" % self.id
