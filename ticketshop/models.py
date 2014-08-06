@@ -155,7 +155,7 @@ class Order(models.Model):
         if payment['status'] == 'paid':
             self.status = self.PAID
             self.save()
-            self.email_ticket()
+            self.send_ticket()
         elif payment['status'] == 'cancelled' or payment['status'] == 'expired':
             self.status = self.CANCELLED
             self.save()
