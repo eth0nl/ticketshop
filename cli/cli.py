@@ -50,13 +50,17 @@ def account_add(name, amount):
                 found = True
                 new_balance = float(l[1]) + amount
                 out_fd.write("%-16s %+9.2f %s\n" % (l[0], new_balance, datetime.now().strftime("%Y-%m-%d_%H:%M:%S")))
-                logger.info("Adding %.2f to %s, old balance was %.2f, new balance is %.2f" % (amount, name, float(l[1]), new_balance))
+                message = "Adding %.2f to %s, old balance was %.2f, new balance is %.2f" % (amount, name, float(l[1]), new_balance)
+                logger.info(message)
+                print(message)
             else:
                 out_fd.write(line)
 
         if not found:
             out_fd.write("%-16s %+9.2f %s\n" % (name, amount, datetime.now().strftime("%Y-%m-%d_%H:%M:%S")))
-            logger.info("Creating %s with balance %.2f" % (name, amount))
+            message = "Creating a%s with balance %.2f" % (name, amount)
+            logger.info(message)
+            print(message)
 
     os.rename(outfile, accountsfile)
 
