@@ -106,6 +106,7 @@ def do_ticket():
 
 # Clear screen
 print('\x1b[H\x1b[2J')
+logger.info("Starting up")
 
 while True:
     try:
