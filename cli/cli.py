@@ -104,6 +104,8 @@ def do_ticket():
     else:
         print(Fore.RED + "Ticket not found")
 
+# Clear screen
+print('\x1b[H\x1b[2J')
 
 while True:
     try:
