@@ -20,14 +20,27 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(handler)
 
-with open(os.path.expanduser("~/.api_key")) as f:
-    apikey = f.read().strip()
 
-url = sys.argv[1]
-accountsfile = sys.argv[2]
+class Completer(object):
+    def __init__(self, accountsfile):
+        self.input_state = 'ticket'
+        self.accountsfile = accountsfile
+
+    def complete(self, text, state):
+        if self.input_state != 'baruser':
+            return None
+
+        if state == 0:
+            self.matches = [account['name'] for account in get_accounts(self.accountsfile)
+                            if account['name'].startswith(text)]
+
+        try:
+            return self.matches[state]
+        except IndexError:
+            return None
 
 
-def get_accounts():
+def get_accounts(accountsfile):
     accounts = []
     with open(accountsfile) as f:
         for line in f.readlines():
@@ -39,7 +52,7 @@ def get_accounts():
     return accounts
 
 
-def account_add(name, amount):
+def account_add(accountsfile, name, amount):
     outfile = '.revbank.%s' % os.getpid()
     with open(accountsfile) as in_fd, open(outfile, 'w') as out_fd:
         found = False
@@ -65,30 +78,7 @@ def account_add(name, amount):
     os.rename(outfile, accountsfile)
 
 
-class Completer(object):
-    def __init__(self):
-        self.input_state = 'ticket'
-
-    def complete(self, text, state):
-        if self.input_state != 'baruser':
-            return None
-
-        if state == 0:
-            self.matches = [account['name'] for account in get_accounts()
-                            if account['name'].startswith(text)]
-
-        try:
-            return self.matches[state]
-        except IndexError:
-            return None
-
-
-completer = Completer()
-readline.parse_and_bind('tab: complete')
-readline.set_completer(completer.complete)
-
-
-def do_ticket():
+def do_ticket(accountsfile, url, apikey):
     ticket_id = raw_input('Enter ticket code >>> ')
     r = requests.post(url, data={'api_key': apikey, 'ticket_id': ticket_id})
     result = r.json()
@@ -102,24 +92,35 @@ def do_ticket():
             completer.input_state = 'baruser'
             print(Fore.RESET, end='')
             baruser = raw_input('Enter baruser >>> ')
-            account_add(baruser, result['bar_credits'])
+            account_add(accountsfile, baruser, result['bar_credits'])
     elif result['result'] == 'used':
         print(Fore.RED + "Ticket already used")
     else:
         print(Fore.RED + "Ticket not found")
 
-# Clear screen
-print('\x1b[H\x1b[2J')
-logger.info("Starting up")
 
-while True:
-    try:
-        do_ticket()
-    except KeyboardInterrupt:
-        print()
-    except:
-        print(Fore.YELLOW)
-        print(traceback.format_exc())
-    finally:
-        print(Fore.RESET, end='')
-        state = 'ticket'
+if __name__ == "__main__":
+    # Clear screen
+    print('\x1b[H\x1b[2J')
+    logger.info("Starting up")
+
+    url = sys.argv[1]
+    accountsfile = sys.argv[2]
+
+    completer = Completer(accountsfile)
+    readline.parse_and_bind('tab: complete')
+    readline.set_completer(completer.complete)
+
+    with open(os.path.expanduser("~/.api_key")) as f:
+        apikey = f.read().strip()
+
+    while True:
+        try:
+            do_ticket(accountsfile, url, apikey)
+        except KeyboardInterrupt:
+            print()
+        except:
+            print(Fore.YELLOW)
+            print(traceback.format_exc())
+        finally:
+            print(Fore.RESET, end='')
