@@ -82,6 +82,8 @@ class ConfirmView(LoginRequiredMixin, FormView):
                 if ticket.max_tickets:
                     # FIXME: We should be able to do this with less queries
                     ticket_count = Ticket.objects.filter(order__event=self.event, type=ticket).exclude(order__status=Order.CANCELLED).aggregate(count=Sum('count'))['count']
+                    if not ticket_count:
+                        ticket_count = 0
                     if ticket_count + count > ticket.max_tickets:
                         # FIXME: We need to make sure the form doesn't show more tickets than there are available
                         raise Exception("Should not be possible to order more tickets than available")
