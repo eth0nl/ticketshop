@@ -32,8 +32,13 @@
       {% with ticket=ticket_field.field.ticket %}
       <li>
         {{ ticket_field }}
+        {% if ticket.sold_out %}<s>{% endif %}
         {{ ticket.event }} {{ ticket.name }}<strong class="price">€ {{ ticket.price}}</strong><br>
         <i>{{ ticket.description }}</i>
+        {% if ticket.sold_out %}
+        </s>
+        SOLD OUT
+        {% endif %}
       </li>
       {% endwith %}
       {% endfor %}
@@ -81,7 +86,14 @@
   <p>We have the following tickets available:</p>
   <ul>
   {% for ticket in view.tickets %}
-    <li>{{ ticket.event }} {{ ticket.name }}<strong class="price">€ {{ ticket.price}}</strong><br> <i>{{ ticket.description }}</i></li>
+    <li>
+      {% if ticket.sold_out %}<s>{% endif %}
+      {{ ticket.event }} {{ ticket.name }}<strong class="price">€ {{ ticket.price}}</strong><br> <i>{{ ticket.description }}</i>
+      {% if ticket.sold_out %}
+      </s>
+      SOLD OUT
+      {% endif %}
+    </li>
   {% endfor %}
   </ul>
 

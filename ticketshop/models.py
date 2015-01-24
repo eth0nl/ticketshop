@@ -62,6 +62,8 @@ class TicketType(models.Model):
     description = models.CharField(max_length=70)
     event = models.ForeignKey('Event')
     price = models.PositiveIntegerField()
+    max_tickets = models.PositiveIntegerField(blank=True, null=True)
+    sold_out = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['event', '-price']

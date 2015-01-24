@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.utils.timezone import now
 from django.views.generic import DetailView, FormView, TemplateView, View
@@ -68,7 +69,7 @@ class ConfirmView(LoginRequiredMixin, FormView):
     def __init__(self, *args, **kwargs):
         super(ConfirmView, self).__init__(*args, **kwargs)
         self.event = ActiveEvent.objects.get().event
-        self.tickets = TicketType.objects.filter(event=self.event)
+        self.tickets = TicketType.objects.filter(event=self.event).select_for_update()
 
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
@@ -78,6 +79,16 @@ class ConfirmView(LoginRequiredMixin, FormView):
         for ticket in self.tickets:
             count = order['ticket_%d' % ticket.id]
             if count:
+                if ticket.max_tickets:
+                    # FIXME: We should be able to do this with less queries
+                    ticket_count = Ticket.objects.filter(order__event=self.event, type=ticket).exclude(order__status=Order.CANCELLED).aggregate(count=Sum('count'))['count']
+                    if ticket_count + count > ticket.max_tickets:
+                        # FIXME: We need to make sure the form doesn't show more tickets than there are available
+                        raise Exception("Should not be possible to order more tickets than available")
+                    else:
+                        if ticket_count + count == ticket.max_tickets:
+                            ticket.sold_out = True
+                            ticket.save()
                 tickets.append({'count': count, 'name': ticket.name, 'price': ticket.price, 'total': count * ticket.price})
                 total += count * ticket.price
         context['tickets'] = tickets
