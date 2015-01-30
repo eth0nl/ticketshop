@@ -33,4 +33,4 @@ RAVEN_CONFIG = {
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('django_downloadview.nginx.XAccelRedirectMiddleware',)
 DOWNLOADVIEW_BACKEND = 'django_downloadview.nginx.XAccelRedirectMiddleware'
-WEASYPRINT_BASEURL = 'https://tickets.eth0.nl/'
+WEASYPRINT_BASEURL = 'http://tickets.eth0.nl/'
