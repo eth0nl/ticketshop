@@ -1,15 +1,20 @@
 body {
-    font: 16px "Bitstream Vera Sans", "Arial", sans-serif;
-    text-align: center;
+    font: 11px "Bitstream Vera Sans", "Arial", sans-serif;
 }
 
-table {
+table.header td {
+    padding-left: 10px;
+}
+
+table.invoice {
     border-spacing: 0;
-    margin: 10px auto;
+    border-width: 0c;
+    margin-left: 30px;
+    margin-bottom: 30px;
     text-align: left;
 }
 
-td.total, td.count, td.amount {
+td.total, td.count, td.amount, th.price {
     padding-left: 20px;
     text-align: right;
 }
@@ -20,6 +25,14 @@ tr.total td {
     border-style: solid;
 }
 
-td, th {
+table.invoice td, th {
     padding-right: 30px;
+    border-right: 0px;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: black;
+    margin: 0px;
 }

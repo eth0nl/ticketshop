@@ -177,12 +177,15 @@ tr.total td {
 }
 
 td, th {
-    padding-right: 30px;
+    padding-right: 20px;
 }
 
 #topcornerlink {
+    text-decoration: none;
+}
+
+#topcorner {
     float: right;
     margin-right: 5px;
     margin-bottom: -30px;
-    text-decoration: none;
 }

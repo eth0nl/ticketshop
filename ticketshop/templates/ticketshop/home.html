@@ -71,6 +71,7 @@
   <th>Time</th>
   <th>Amount</th>
   <th>Status</th>
+  <th></th>
 </tr>
 {% for order in orders %}
 <tr>
@@ -78,6 +79,7 @@
   <td>{{ order.timestamp }}</td>
   <td>€ {{ order.amount }}</td>
   <td>{{ order.get_status_display }}</td>
+  <td>{% if order.valid %}<a href="{% url 'invoice_pdf' order.id %}">Download invoice</a>{% endif %}</td>
 {% endfor %}
 </table>
 

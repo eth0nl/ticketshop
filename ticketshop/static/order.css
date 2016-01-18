@@ -1,0 +1,25 @@
+body {
+    font: 16px "Bitstream Vera Sans", "Arial", sans-serif;
+    text-align: center;
+}
+
+table {
+    border-spacing: 0;
+    margin: 10px auto;
+    text-align: left;
+}
+
+td.total, td.count, td.amount {
+    padding-left: 20px;
+    text-align: right;
+}
+
+tr.total td {
+    border-width: 1px 0 0 0;
+    border-color: black;
+    border-style: solid;
+}
+
+td, th {
+    padding-right: 30px;
+}

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import EmailMessage
 from django.db import models
+from django.db.models import Max
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -117,6 +118,7 @@ class Order(models.Model):
     code = models.CharField(max_length=10, default=generate_random_code)
     barcode = models.ImageField(upload_to="barcode", editable=False)
     admitted_timestamp = models.DateTimeField(blank=True, null=True, editable=False)
+    invoice_number = models.PositiveIntegerField(blank=True, null=True, unique=True)
 
     def __str__(self):
         return "Order %s" % self.id
@@ -156,6 +158,11 @@ class Order(models.Model):
     def check_payment_status(self, payment):
         if payment['status'] == 'paid':
             self.status = self.PAID
+            max_invoice_number = Order.objects.select_for_update().aggregate(Max('invoice_number'))['invoice_number__max']
+            if max_invoice_number:
+                self.invoice_number = max_invoice_number + 1
+            else:
+                self.invoice_number = 1
             self.save()
             self.send_ticket()
         elif payment['status'] == 'cancelled' or payment['status'] == 'expired':
@@ -177,3 +184,14 @@ class Order(models.Model):
     @property
     def filename(self):
         return "ticket_%d.pdf" % self.id
+
+    @property
+    def invoice_filename(self):
+        return "invoice_%d.pdf" % self.invoice_number
+
+    @property
+    def valid(self):
+        if self.status in (self.PAID, self.USED):
+            return True
+        else:
+            return False

@@ -49,3 +49,11 @@ class OrderForm(forms.Form):
 
 class ConfirmForm(forms.Form):
     pass
+
+
+class SettingsForm(forms.Form):
+    organisation = forms.CharField(max_length=100, required=False)
+    address = forms.CharField(max_length=64, required=False)
+    zip_code = forms.CharField(max_length=7, required=False)
+    city = forms.CharField(max_length=64, required=False)
+    country = forms.CharField(max_length=64, required=False)

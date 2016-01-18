@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ticket</title>
+    <link rel="stylesheet" href="/static/invoice.css" type="text/css">
+  </head>
+
+  <body>
+    <img src="{% static "logo.svg" %}" alt="logo" style="float: left;">
+    <img src="{% static "shadowheader.svg" %}" alt="shadow" style="float: right; margin-top: 6px;">
+    <table style="margin-left: 120px;" class="header">
+      <tr><td>Stichting eth0</td><td>IBAN NL15RABO0120835207</td></tr>
+      <tr><td>Wilhelminaplein 12</td><td>K.v.K. 37162914</td></tr>
+      <tr><td>8911BS Leeuwarden</td><td>info@eth0.nl</td></tr>
+      <tr><td>The Netherlands</td><td>+31647683716</td></tr>
+    </table>
+    <hr>
+    <h1>Invoice</h1>
+    <p>
+      {{ order.user.organisation }}<br>
+      {{ order.user.address }}<br>
+      {{ order.user.zip_code }} {{ order.user.city}}<br>
+      {{ order.user.country }}
+    </p>
+    <p>
+      <b>Date:</b> {{ order.timestamp |date:"DATE_FORMAT" }}<br>
+      <b>Invoice Number:</b> {{ order.invoice_number }}
+    </dl>
+    </p>
+    <br><br>
+    <table class="invoice">
+      <tr>
+        <th>Description</th><th class="price">Price</th><th class="price">Quantity</th><th class="price">Total</th>
+      </tr>
+      {% for ticket in tickets %}
+      <tr>
+        <td>{{ ticket.name }}</td><td class="total">€ {{ ticket.price}}</td><td class="count">{{ ticket.count }}x </td><td class="total">€ {{ ticket.total }}</td>
+      </tr>
+      {% endfor %}
+      {% if order.bar_credits %}
+      <tr>
+        <td colspan="3">Bar credits</td><td class="total">€ {{ order.bar_credits }}</td>
+      </tr>
+      {% endif %}
+      {% if order.donation %}
+      <tr>
+        <td colspan="3">Donation</td><td class="total">€ {{ order.donation }}</td>
+      </tr>
+      {% endif %}
+      <tr class="total">
+        <td colspan="3">Total (0% VAT)</td><td class="total">€ {{ order.amount }}</td>
+      </tr>
+    </table>
+    <p>
+      If you have any questions about this invoice, please contact us via email at tickets@eth0.nl.
+    </p>
+  </body>
+</html>

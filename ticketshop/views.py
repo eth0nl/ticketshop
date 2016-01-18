@@ -1,4 +1,4 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from django.conf import settings
@@ -12,7 +12,7 @@ from django_downloadview import ObjectDownloadView
 from django_weasyprint import PDFTemplateResponseMixin
 import Mollie
 
-from .forms import ConfirmForm, OrderForm
+from .forms import ConfirmForm, OrderForm, SettingsForm
 from .models import ActiveEvent, Order, Ticket, TicketType
 
 
@@ -215,3 +215,39 @@ class CheckTicketView(ProtectedApiView):
             return JsonResponse({'result': 'used'})
 
         return JsonResponse({'result': 'invalid'})
+
+
+class InvoicePdfView(OrderDetailView, PDFTemplateResponseMixin):
+    template_name = "ticketshop/invoice_pdf.html"
+
+    def get_filename(self):
+        return self.object.invoice_filename
+
+
+class SettingsView(LoginRequiredMixin, FormView):
+    template_name = "ticketshop/settings.html"
+    form_class = SettingsForm
+    success_url = '/'
+
+    def get_initial(self):
+        user = self.request.user
+        initial = {
+            'organisation': user.organisation,
+            'address': user.address,
+            'zip_code': user.zip_code,
+            'city': user.city,
+            'country': user.country,
+        }
+
+        return initial
+
+    def form_valid(self, form):
+        user = self.request.user
+        user.organisation = form.cleaned_data['organisation']
+        user.address = form.cleaned_data['address']
+        user.zip_code = form.cleaned_data['zip_code']
+        user.city = form.cleaned_data['city']
+        user.country = form.cleaned_data['country']
+        user.save()
+
+        return super(SettingsView, self).form_valid(form)
