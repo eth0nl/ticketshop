@@ -4,6 +4,7 @@ body {
 }
 
 table {
+    border-width: 0;
     border-spacing: 0;
     margin: 10px auto;
     text-align: left;
@@ -15,9 +16,10 @@ td.total, td.count, td.amount {
 }
 
 tr.total td {
-    border-width: 1px 0 0 0;
-    border-color: black;
-    border-style: solid;
+    border: 1px solid;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
 }
 
 td, th {
