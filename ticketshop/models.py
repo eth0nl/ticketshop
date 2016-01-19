@@ -120,6 +120,9 @@ class Order(models.Model):
     admitted_timestamp = models.DateTimeField(blank=True, null=True, editable=False)
     invoice_number = models.PositiveIntegerField(blank=True, null=True, unique=True)
 
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
         return "Order %s" % self.id
 
