@@ -67,7 +67,7 @@ class TicketType(models.Model):
     sold_out = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['event', '-price']
+        ordering = ['event', 'price']
 
     def __str__(self):
         return "%s %s" % (self.name, self.event)
