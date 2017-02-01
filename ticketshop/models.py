@@ -60,7 +60,7 @@ class Event(models.Model):
 @python_2_unicode_compatible
 class TicketType(models.Model):
     name = models.CharField(max_length=70)
-    description = models.CharField(max_length=70)
+    description = models.CharField(max_length=150)
     event = models.ForeignKey('Event')
     price = models.PositiveIntegerField()
     max_tickets = models.PositiveIntegerField(blank=True, null=True)
