@@ -108,6 +108,15 @@ See you at {name}!
 The {name} team
 """
 
+email_body_cancelled = """Hello,
+
+The payment for {name} order number {order_id} has not been received
+on time by our payment provider and has been cancelled.
+
+The {name} team
+
+"""
+
 
 def generate_random_code():
     return ''.join(random.sample(string.ascii_letters + string.digits, 7))
@@ -184,8 +193,13 @@ class Order(models.Model):
             self.save()
             self.send_ticket()
         elif payment['status'] == 'cancelled' or payment['status'] == 'expired':
-            self.status = self.CANCELLED
-            self.save()
+            if self.status == self.PENDING:
+                subject = 'Your {} order is cancelled'.format(self.event.name)
+                body = email_body_cancelled.format(name=self.event.name, order_id=self.id)
+                email = EmailMessage(subject, body, "tickets@eth0.nl", [self.user.email])
+                email.send()
+                self.status = self.CANCELLED
+                self.save()
 
     def send_ticket(self):
         subject = 'Your {} ticket(s)'.format(self.event.name)
