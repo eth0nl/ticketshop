@@ -3,9 +3,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
 from django.db import models
-from django.db.models import Max
+from django.db.models import Max, Sum
 from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -71,6 +72,20 @@ class TicketType(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.name, self.event)
+
+    def clean(self):
+        if self.id and self.max_tickets:
+            number_of_tickets = Ticket.objects.filter(type=self).exclude(order__status=Order.CANCELLED).aggregate(count=Sum('count'))['count']
+
+            if number_of_tickets > self.max_tickets:
+                raise ValidationError("Max tickets can't be lower than number of tickets already ordered")
+
+            if number_of_tickets == self.max_tickets:
+                self.sold_out = True
+            else:
+                self.sold_out = False
+
+        super(TicketType, self).clean()
 
 
 @python_2_unicode_compatible
