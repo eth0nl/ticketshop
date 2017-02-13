@@ -1,13 +1,22 @@
 {% extends 'adminplus/base.html' %}
 
 {% block content %}
+<h2>Ordered</h2>
 <table>
   {% for ticket in tickets %}
   <tr>
-    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} padding-right: 20px;">{{ ticket.name }}</td>
-    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;">{{ ticket.count }}x</td>
-    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right; padding-right: 30px;"> € {{ ticket.price}}</td>
-    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;" >€ {{ ticket.total }}</td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} padding-right: 20px;">
+      {{ ticket.name }}
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;">
+      {{ ticket.count }}x
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right; padding-right: 30px;">
+      € {{ ticket.price}}
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;" >
+      € {{ ticket.total }}
+    </td>
   </tr>
   {% endfor %}
   <tr>
@@ -22,6 +31,38 @@
   </tr>
   <tr class="total">
     <td colspan="3">Total</td><td style="text-align: right;">€ {{ total }}</td>
+  </tr>
+</table>
+<h2>Paid</h2>
+<table>
+  {% for ticket in tickets %}
+  <tr>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} padding-right: 20px;">
+      {{ ticket.name }}
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;">
+      {{ ticket.count_paid }}x
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right; padding-right: 30px;">
+      € {{ ticket.price}}
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;" >
+      € {{ ticket.total_paid }}
+    </td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td>Subtotal tickets</td><td colspan="2">{{ subtotal_count_paid }}x</td><td style="text-align: right;">€ {{ subtotal_tickets_paid }}</td>
+  </tr>
+  <tr>
+    <td colspan="3">Bar credits</td><td style="text-align: right;">€ {{ bar_credits_paid }}</td>
+  </tr>
+  <tr>
+    <td colspan="3" style="border-bottom: 1px solid black;">Donation</td>
+    <td style="text-align: right; border-bottom: 1px solid black;">€ {{ donation_paid }}</td>
+  </tr>
+  <tr class="total">
+    <td colspan="3">Total</td><td style="text-align: right;">€ {{ total_paid }}</td>
   </tr>
 </table>
 {% endblock %}
