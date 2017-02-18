@@ -146,7 +146,10 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         qs = super(OrderDetailView, self).get_queryset()
-        return qs.filter(user=self.request.user)
+        if self.request.user.is_superuser:
+            return qs
+        else:
+            return qs.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(OrderDetailView, self).get_context_data(**kwargs)
@@ -163,10 +166,6 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 
 class OrderPdfView(OrderDetailView, PDFTemplateResponseMixin):
     template_name = "ticketshop/order_pdf.html"
-
-    def get_queryset(self):
-        qs = super(OrderPdfView, self).get_queryset()
-        return qs.filter(user=self.request.user)
 
     def get_filename(self):
         return self.object.filename
