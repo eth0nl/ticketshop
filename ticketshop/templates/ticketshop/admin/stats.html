@@ -65,4 +65,36 @@
     <td colspan="3">Total</td><td style="text-align: right;">€ {{ total_paid }}</td>
   </tr>
 </table>
+<h2>Used</h2>
+<table>
+  {% for ticket in tickets %}
+  <tr>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} padding-right: 20px;">
+      {{ ticket.name }}
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;">
+      {{ ticket.count_used }}x
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right; padding-right: 30px;">
+      € {{ ticket.price}}
+    </td>
+    <td style="{% if forloop.last %} border-bottom: 1px solid black; {% endif %} text-align: right;" >
+      € {{ ticket.total_used }}
+    </td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td>Subtotal tickets</td><td colspan="2">{{ subtotal_count_used }}x</td><td style="text-align: right;">€ {{ subtotal_tickets_used }}</td>
+  </tr>
+  <tr>
+    <td colspan="3">Bar credits</td><td style="text-align: right;">€ {{ bar_credits_used }}</td>
+  </tr>
+  <tr>
+    <td colspan="3" style="border-bottom: 1px solid black;">Donation</td>
+    <td style="text-align: right; border-bottom: 1px solid black;">€ {{ donation_used }}</td>
+  </tr>
+  <tr class="total">
+    <td colspan="3">Total</td><td style="text-align: right;">€ {{ total_used }}</td>
+  </tr>
+</table>
 {% endblock %}
